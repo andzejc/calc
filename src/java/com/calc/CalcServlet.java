@@ -6,6 +6,7 @@
 package com.calc;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -16,9 +17,12 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author HP
  */
-@WebServlet(name = "Calculator", urlPatterns = {"/calculator"})
-public class Calculator extends HttpServlet {
+@WebServlet(name = "CalcServlet", urlPatterns = {"/calcServlet"})
+public class CalcServlet extends HttpServlet {
 
+    private static Integer a;
+    private static Integer b;
+    private static String action;
     private static Integer sum;
 
     /**
@@ -31,29 +35,52 @@ public class Calculator extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException, NullPointerException {
 
-        Integer a = Integer.parseInt(request.getParameter("numberA"));
-        Integer b = Integer.parseInt(request.getParameter("numberB"));
-        String action = request.getParameter("submit");
-        if (action.equals("sum")) {
-            sum = a + b;
-        } else {
-            sum = a * b;
+        try {
+            a = Integer.parseInt(request.getParameter("numberA"));
+            b = Integer.parseInt(request.getParameter("numberB"));
+            action = request.getParameter("submit");
+        } catch (NumberFormatException e) {
         }
-        response.getWriter().write("<html>"
-                + "<head></head>"
-                + "<body>"
-                + "<form action = 'calculator' method='get'>"
-                + "<input type='number' name='numberA' />"
-                + "<input type='number' name='numberB' />"
-                + "<input type='submit' name='submit' value='sum' />"
-                + "<input type='submit' name='submit' value='mult' />"
-                + "</form>"
-                + action + " " + a + " and " + b + " = " + sum
-                + "</body>"
-                + "</html>"
-        );
+        try {
+            if (action.equals("sum")) {
+                sum = a + b;
+            } else {
+                sum = a * b;
+            }
+        } catch (NullPointerException ex) {
+
+        }
+        if (action == null) {
+            response.getWriter().write("<html>"
+                    + "<head></head>"
+                    + "<body>"
+                    + "<form action = 'calcServlet' method='get'>"
+                    + "<input type='number' name='numberA' />"
+                    + "<input type='number' name='numberB' />"
+                    + "<input type='submit' name='submit' value='sum' />"
+                    + "<input type='submit' name='submit' value='mult' />"
+                    + "</form>"
+                    + "</body>"
+                    + "</html>"
+            );
+        } else {
+            response.getWriter().write("<html>"
+                    + "<head></head>"
+                    + "<body>"
+                    + "<form action = 'calcServlet' method='get'>"
+                    + "<input type='number' name='numberA' />"
+                    + "<input type='number' name='numberB' />"
+                    + "<input type='submit' name='submit' value='sum' />"
+                    + "<input type='submit' name='submit' value='mult' />"
+                    + "</form>"
+                    + action + " " + a + " and " + b + " = " + sum
+                    + "</body>"
+                    + "</html>"
+            );
+        }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
